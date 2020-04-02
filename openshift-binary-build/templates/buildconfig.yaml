@@ -1,0 +1,38 @@
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  name: {{ include "binary-build.fullname" . }}
+  labels:
+{{ include "binary-build.labels" . | indent 4 }}
+spec:
+  output:
+    pushSecret: 
+      name: {{ include "binary-build.fullname" . }}-registry
+    to:
+      kind: DockerImage
+      name: {{ .Values.registry.url }}/{{ .Values.registry.repo }}/{{ .Values.app_name }}:{{ .Values.app_version }}
+  resources:
+    limits:
+      memory: {{ .Values.build_memory_limit }}
+    requests:
+      memory: {{ .Values.build_memory_request }}
+  source:
+    binary: {}
+    type: Binary
+  strategy:
+    sourceStrategy:
+      env:
+      - name: BUILD_LOGLEVEL
+        value: "5"
+      forcePull: true
+      from:
+        kind: ImageStreamTag
+        name: {{ .Values.builder_image_stream }}:{{ .Values.builder_version }}
+        namespace: {{ .Values.builder_image_stream_namespace }}
+      incremental: true
+    type: Source
+  triggers:
+  - generic:
+      secret: gYYIi5Cd-a_whLvXN-ZR
+    type: Generic
+

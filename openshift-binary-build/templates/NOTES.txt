@@ -1,0 +1,20 @@
+1. BuildConfig created!
+
+Now please ensure the registry to push to is configured correctly! (see below)
+
+2.  You need to ensure that the certificate for the external registry is configured in the cluster, to do this:
+
+    openssl s_client -connect ${REGISTRY_HOST}:${REGISTRY_PORT} 2>/dev/null </dev/null |  sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' > registry-cert.pem
+
+    oc create configmap registry-cert -n openshift-config \
+    --from-file=${REGISTRY_HOST}..${REGISTRY_PORT}=registry-cert.pem
+
+    oc patch image.config.openshift.io/cluster --patch '{"spec":{"additionalTrustedCA":{"name":"registry-cert"}}}' --type=merge
+
+3. You need to ensure the builder account has access to the secret.  Please run:
+
+    oc secrets link --for=push builder {{ include "binary-build.fullname" . }}-registry
+
+4.  Now you can actually perform a binary build! e.g.
+
+    oc start-build {{ include "binary-build.fullname" . }} --from-file=http://some-maven-repo/repository/maven-releases/com/codergists/spring-boot-camel/1.0.15/spring-boot-camel-1.0.15.jar

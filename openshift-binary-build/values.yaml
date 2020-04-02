@@ -1,0 +1,14 @@
+app_name: binary-build
+app_version: "1.0"
+build_memory_limit: 0.8G
+build_memory_request: 0.7G
+builder_image_stream: fuse7-java-openshift
+builder_version: "1.4"
+builder_image_stream_namespace: openshift
+memory_limit: 256Mi
+memory_request: 256Mi
+registry:
+  url: someregistry:1234
+  repo: somerepo
+  username: admin
+  password: password
