@@ -12,7 +12,7 @@ Somewhere I store some helm stuff I'm playing about with.
 
 Using the binary build style, say we have a fat spring boot jar, we can then run a build after after deploying from the chart.
 
-Typically:
+Typically an admin/elevated style user would setup the initial bits (and know the registry username/password) - and would perform the following:
 
 ```
 # deploy openshift/kube objects via chart
@@ -26,8 +26,12 @@ oc patch image.config.openshift.io/cluster --patch '{"spec":{"additionalTrustedC
 
 # ensure openshift builder account has access to the registry secret created in the helm install
 oc secrets link builder myapp-binary-build-registry
+```
 
-# Now you can actually perform a binary build!
+And then users can:
+
+```
+# can actually perform a binary build!
 oc start-build myapp-binary-build --from-file=http://some-maven-repo/repository/maven-releases/com/codergists/spring-boot-camel/1.0/spring-boot-camel-1.0.jar
 ```
 
@@ -43,10 +47,11 @@ registry:
 ```
 i.e. `someregistry:1234/somerepo/binary-build:1.0`
 
-For rolling out new changes, update the `app_version`, upgrade the chart and build with a different binary. e.g.:
+For rolling out new changes, update the `app_version`, upgrade the chart and build with a different binary. Note we re-use the values from the initial setup e.g.:
 
 ```
 helm upgrade --reuse-values --set app_version=1.1 myapp charts/binary-build
 oc start-build myapp-binary-build --from-file=http://some-maven-repo/repository/maven-releases/com/codergists/spring-boot-camel/1.1/spring-boot-camel-1.1.jar
 ```
-This should then result in a new tagged version of the image being available in the registry
+
+This should then result in a new tagged version of the image being available in the external registry.
