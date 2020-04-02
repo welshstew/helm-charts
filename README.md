@@ -46,14 +46,7 @@ i.e. `someregistry:1234/somerepo/binary-build:1.0`
 For rolling out new changes, update the `app_version`, upgrade the chart and build with a different binary. e.g.:
 
 ```
-app_name: binary-build
-app_version: "1.1"
-registry:
-  url: someregistry:1234
-  repo: somerepo
-
-helm upgrade myapp ./openshift-binary-build -f some-values.yaml 
+helm upgrade --set app_version=1.1 myapp charts/binary-build
 oc start-build myapp-binary-build --from-file=http://some-maven-repo/repository/maven-releases/com/codergists/spring-boot-camel/1.1/spring-boot-camel-1.1.jar
 ```
-
 This should then result in a new tagged version of the image being available in the registry

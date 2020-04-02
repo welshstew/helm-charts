@@ -13,7 +13,7 @@ Now please ensure the registry to push to is configured correctly! (see below)
 
 3. You need to ensure the builder account has access to the secret.  Please run:
 
-    oc secrets link --for=push builder {{ include "binary-build.fullname" . }}-registry
+    oc secrets link builder {{ include "binary-build.fullname" . }}-registry
 
 4.  Now you can actually perform a binary build! e.g.
 
