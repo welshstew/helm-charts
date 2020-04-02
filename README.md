@@ -55,3 +55,5 @@ oc start-build myapp-binary-build --from-file=http://some-maven-repo/repository/
 ```
 
 This should then result in a new tagged version of the image being available in the external registry.
+
+![using helm binary build](./images/jenkins-helm-build.png)
